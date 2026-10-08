@@ -7,7 +7,10 @@
         x:Class="SmartFactory.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
+        Width = "900"
+        Height = "600"
         Title="SmartFactory">
+        
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,8 +18,42 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+    <Grid>
+     <Image Source="avares://SmartFactory/Assets/factory_plan.png"
+           HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None"/>
+ 
+    <Canvas x:Name="canvasFactory" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" >
+      
+        <Grid Height="120" Width="200" Canvas.Left="650" Canvas.Top="450">
+            <Button x:Name="UpButton" Content="Up" HorizontalAlignment="Center" VerticalAlignment="Top" Width="40" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveUp_Click" />
+            <Button x:Name="DownButton" Content="Down" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="60" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveDown_Click"/>
+            <Button x:Name="LeftButton" Content="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveLeft_Click" />
+            <Button x:Name="RightButton" Content="Right" HorizontalAlignment="Right" VerticalAlignment="Center" Width="60" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveRight_Click" />
+
+            <Button x:Name="LeftANDupButton" Content="Diag" HorizontalAlignment="Left" VerticalAlignment="Top" Width="55" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveLeftANDup_Click" />
+            <Button x:Name="LeftANDdownButton" Content="Diag" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="60" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveLeftANDdown_Click"/>
+            <Button x:Name="RightANDupButton" Content="Diag" HorizontalAlignment="Right" VerticalAlignment="Top" Width="55" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveRightANDup_Click" />
+            <Button x:Name="RightANDdownButton" Content="Diag" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="55" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveRightANDdown_Click" />
+        </Grid>
+
+        <Grid Height="120" Width="200" Canvas.Left="650" Canvas.Top="350">
+            <Button x:Name="TurnLeft" Content="Turn Left" HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" FontSize="16" Background="#974B11" Foreground="Black" Click="TurnLeft_Click" />
+            <Button x:Name="TurnRight" Content="Turn Right" HorizontalAlignment="Right" VerticalAlignment="Center" Width="100" FontSize="16" Background="#974B11" Foreground="Black" Click="TurnRight_Click" />
+        </Grid>
+
+        <Rectangle x:Name="RobotRectangle" Canvas.Left="{Binding RobotX}" Canvas.Top="{Binding RobotY}" Width="70" Height="50" Stroke="Black" StrokeThickness="2" RenderTransformOrigin="50%,50%">
+            <Rectangle.RenderTransform>
+                <RotateTransform Angle="{Binding AnzeigeAngle}" />
+            </Rectangle.RenderTransform>
+            <Rectangle.Fill>
+                <ImageBrush Source="avares://SmartFactory/Assets/robot_platform.png" Stretch="UniformToFill" />
+            </Rectangle.Fill>
+        </Rectangle>
+        <TextBox x:Name="PositionTextBox_X" Canvas.Left="650" Canvas.Top="100" Width="35" Height="30" FontSize="16" IsReadOnly="True" Text="{Binding AnzeigeX}" />
+        <TextBox x:Name="PositionTextBox_Y" Canvas.Left="650" Canvas.Top="150" Width="35" Height="30" FontSize="16" IsReadOnly="True" Text="{Binding AnzeigeY}" />
+        <TextBox x:Name="PositionTextBox_Angle" Canvas.Left="740" Canvas.Top="100" Width="35" Height="30" FontSize="16" IsReadOnly="True" Text="{Binding AnzeigeAngle}" />
+    </Canvas>
+  
+</Grid>
 
 </Window>
