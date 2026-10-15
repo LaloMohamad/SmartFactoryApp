@@ -23,22 +23,132 @@
            HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None"/>
  
     <Canvas x:Name="canvasFactory" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" >
+        <TextBlock Canvas.Left="58" Canvas.Top="59" Text="{Binding Laufzeit}" Foreground="#E22E2E" FontSize="23" />
+        <Canvas x:Name="productionRed" Canvas.Left="{Binding LinesView[0].X}" Canvas.Top="{Binding LinesView[0].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
+            <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[0].Angle}" /></Canvas.RenderTransform>
+            <Rectangle Width="105" Height="18" Fill="#D92D32" Stroke="White" StrokeThickness="2" />
+            <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+        </Canvas>
+        <Canvas x:Name="productionBlue" Canvas.Left="{Binding LinesView[1].X}" Canvas.Top="{Binding LinesView[1].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
+            <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[1].Angle}" /></Canvas.RenderTransform>
+            <Rectangle Width="105" Height="18" Fill="#315FD5" Stroke="White" StrokeThickness="2" />
+            <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+        </Canvas>
+        <Canvas x:Name="productionYellow" Canvas.Left="{Binding LinesView[2].X}" Canvas.Top="{Binding LinesView[2].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
+            <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[2].Angle}" /></Canvas.RenderTransform>
+            <Rectangle Width="105" Height="18" Fill="#E8C600" Stroke="White" StrokeThickness="2" />
+            <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+        </Canvas>
+        <Canvas x:Name="productionGreen" Canvas.Left="{Binding LinesView[3].X}" Canvas.Top="{Binding LinesView[3].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
+            <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[3].Angle}" /></Canvas.RenderTransform>
+            <Rectangle Width="105" Height="18" Fill="#2A9D48" Stroke="White" StrokeThickness="2" />
+            <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+        </Canvas>
       
-        <Grid Height="120" Width="200" Canvas.Left="650" Canvas.Top="450">
-            <Button x:Name="UpButton" Content="Up" HorizontalAlignment="Center" VerticalAlignment="Top" Width="40" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveUp_Click" />
-            <Button x:Name="DownButton" Content="Down" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="60" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveDown_Click"/>
-            <Button x:Name="LeftButton" Content="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveLeft_Click" />
-            <Button x:Name="RightButton" Content="Right" HorizontalAlignment="Right" VerticalAlignment="Center" Width="60" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveRight_Click" />
-
-            <Button x:Name="LeftANDupButton" Content="Diag" HorizontalAlignment="Left" VerticalAlignment="Top" Width="55" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveLeftANDup_Click" />
-            <Button x:Name="LeftANDdownButton" Content="Diag" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="60" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveLeftANDdown_Click"/>
-            <Button x:Name="RightANDupButton" Content="Diag" HorizontalAlignment="Right" VerticalAlignment="Top" Width="55" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveRightANDup_Click" />
-            <Button x:Name="RightANDdownButton" Content="Diag" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="55" FontSize="16" Background="#974B11" Foreground="Black" Click="MoveRightANDdown_Click" />
+        <Grid Height="120" Width="180" Canvas.Left="670" Canvas.Top="450" RowDefinitions="40,40,40" ColumnDefinitions="60,60,60">
+            <Button x:Name="LeftANDupButton" Grid.Row="0" Grid.Column="0" Content="↖" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveLeftANDup_Click" />
+            <Button x:Name="UpButton" Grid.Row="0" Grid.Column="1" Content="↑" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveUp_Click" />
+            <Button x:Name="RightANDupButton" Grid.Row="0" Grid.Column="2" Content="↗" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveRightANDup_Click" />
+            <Button x:Name="LeftButton" Grid.Row="1" Grid.Column="0" Content="←" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveLeft_Click" />
+            <Button x:Name="CenterButton" Grid.Row="1" Grid.Column="1" Content="■" Margin="2" FontSize="19" Background="#45525A" Foreground="White" />
+            <Button x:Name="RightButton" Grid.Row="1" Grid.Column="2" Content="→" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveRight_Click" />
+            <Button x:Name="LeftANDdownButton" Grid.Row="2" Grid.Column="0" Content="↙" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveLeftANDdown_Click" />
+            <Button x:Name="DownButton" Grid.Row="2" Grid.Column="1" Content="↓" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveDown_Click" />
+            <Button x:Name="RightANDdownButton" Grid.Row="2" Grid.Column="2" Content="↘" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveRightANDdown_Click" />
         </Grid>
 
-        <Grid Height="120" Width="200" Canvas.Left="650" Canvas.Top="350">
-            <Button x:Name="TurnLeft" Content="Turn Left" HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" FontSize="16" Background="#974B11" Foreground="Black" Click="TurnLeft_Click" />
-            <Button x:Name="TurnRight" Content="Turn Right" HorizontalAlignment="Right" VerticalAlignment="Center" Width="100" FontSize="16" Background="#974B11" Foreground="Black" Click="TurnRight_Click" />
+        <Rectangle x:Name="brick0" Width="{Binding BricksView[0].Width}" Height="12" Fill="{Binding BricksView[0].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[0].X}" Canvas.Top="{Binding BricksView[0].Y}">
+                   <Rectangle.RenderTransform>
+                       <RotateTransform Angle="{Binding BricksView[0].Angle}" />
+                   </Rectangle.RenderTransform>
+                </Rectangle>
+        <Rectangle x:Name="brick1" Width="{Binding BricksView[1].Width}" Height="12" Fill="{Binding BricksView[1].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[1].X}" Canvas.Top="{Binding BricksView[1].Y}">
+                   <Rectangle.RenderTransform>
+                       <RotateTransform Angle="{Binding BricksView[1].Angle}" />
+                   </Rectangle.RenderTransform>
+                </Rectangle>
+        <Rectangle x:Name="brick2" Width="{Binding BricksView[2].Width}" Height="12" Fill="{Binding BricksView[2].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[2].X}" Canvas.Top="{Binding BricksView[2].Y}">
+                   <Rectangle.RenderTransform>
+                       <RotateTransform Angle="{Binding BricksView[2].Angle}" />
+                   </Rectangle.RenderTransform>
+                </Rectangle>
+        <Rectangle x:Name="brick3" Width="{Binding BricksView[3].Width}" Height="12" Fill="{Binding BricksView[3].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[3].X}" Canvas.Top="{Binding BricksView[3].Y}">
+                   <Rectangle.RenderTransform>
+                       <RotateTransform Angle="{Binding BricksView[3].Angle}" />
+                   </Rectangle.RenderTransform>
+                </Rectangle>
+        
+        <Rectangle x:Name="brick4" Width="{Binding BricksView[4].Width}" Height="12" Fill="{Binding BricksView[4].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[4].X}" Canvas.Top="{Binding BricksView[4].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[4].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick5" Width="{Binding BricksView[5].Width}" Height="12" Fill="{Binding BricksView[5].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[5].X}" Canvas.Top="{Binding BricksView[5].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[5].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick6" Width="{Binding BricksView[6].Width}" Height="12" Fill="{Binding BricksView[6].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[6].X}" Canvas.Top="{Binding BricksView[6].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[6].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick7" Width="{Binding BricksView[7].Width}" Height="12" Fill="{Binding BricksView[7].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[7].X}" Canvas.Top="{Binding BricksView[7].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[7].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick8" Width="{Binding BricksView[8].Width}" Height="12" Fill="{Binding BricksView[8].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[8].X}" Canvas.Top="{Binding BricksView[8].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[8].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick9" Width="{Binding BricksView[9].Width}" Height="12" Fill="{Binding BricksView[9].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[9].X}" Canvas.Top="{Binding BricksView[9].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[9].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick10" Width="{Binding BricksView[10].Width}" Height="12" Fill="{Binding BricksView[10].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[10].X}" Canvas.Top="{Binding BricksView[10].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[10].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick11" Width="{Binding BricksView[11].Width}" Height="12" Fill="{Binding BricksView[11].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[11].X}" Canvas.Top="{Binding BricksView[11].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[11].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick12" Width="{Binding BricksView[12].Width}" Height="12" Fill="{Binding BricksView[12].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[12].X}" Canvas.Top="{Binding BricksView[12].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[12].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick13" Width="{Binding BricksView[13].Width}" Height="12" Fill="{Binding BricksView[13].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[13].X}" Canvas.Top="{Binding BricksView[13].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[13].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick14" Width="{Binding BricksView[14].Width}" Height="12" Fill="{Binding BricksView[14].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[14].X}" Canvas.Top="{Binding BricksView[14].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[14].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+        <Rectangle x:Name="brick15" Width="{Binding BricksView[15].Width}" Height="12" Fill="{Binding BricksView[15].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
+                   Canvas.Left="{Binding BricksView[15].X}" Canvas.Top="{Binding BricksView[15].Y}">
+            <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[15].Angle}" /></Rectangle.RenderTransform>
+        </Rectangle>
+
+        <Button x:Name="StartButton" Content="Start" Canvas.Left="650" Canvas.Top="294" Width="95" Height="40" FontSize="18" FontWeight="Bold" Background="#287A42" Foreground="White" Click="Start_Click" />
+        <Button x:Name="StopButton" Content="Stop" Canvas.Left="755" Canvas.Top="294" Width="95" Height="40" FontSize="18" FontWeight="Bold" Background="#A32F2F" Foreground="White" Click="Stop_Click" />
+        <Grid Height="80" Width="200" Canvas.Left="650" Canvas.Top="350">
+            <Button x:Name="TurnLeft" Content="Turn Left" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" FontSize="16" Background="#974B11" Foreground="White" Click="TurnLeft_Click" />
+            <Button x:Name="TurnRight" Content="Turn Right" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" FontSize="16" Background="#974B11" Foreground="White" Click="TurnRight_Click" />
+            <Button x:Name="ResetAngle" Content="0°" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="60" FontSize="16" Background="#45525A" Foreground="White" Click="ResetAngle_Click" />
         </Grid>
 
         <Rectangle x:Name="RobotRectangle" Canvas.Left="{Binding RobotX}" Canvas.Top="{Binding RobotY}" Width="70" Height="50" Stroke="Black" StrokeThickness="2" RenderTransformOrigin="50%,50%">
@@ -46,7 +156,7 @@
                 <RotateTransform Angle="{Binding AnzeigeAngle}" />
             </Rectangle.RenderTransform>
             <Rectangle.Fill>
-                <ImageBrush Source="avares://SmartFactory/Assets/robot_platform.png" Stretch="UniformToFill" />
+               <ImageBrush Source="avares://SmartFactory/Assets/robot_platform.png" Stretch="UniformToFill" />
             </Rectangle.Fill>
         </Rectangle>
         <TextBox x:Name="PositionTextBox_X" Canvas.Left="650" Canvas.Top="100" Width="35" Height="30" FontSize="16" IsReadOnly="True" Text="{Binding AnzeigeX}" />

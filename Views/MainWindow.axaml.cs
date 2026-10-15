@@ -52,6 +52,18 @@ public partial class MainWindow : Window
     {
         ViewModel?.TurnRight();
     }
+    private void ResetAngle_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.ResetAngle();
+    }
+    private void Start_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.Start();
+    }
+    private void Stop_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel?.Stop();
+    }
 
 }
 

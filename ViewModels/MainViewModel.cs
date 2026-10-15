@@ -1,57 +1,106 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Drawing;
+using System.Diagnostics;
 using SmartFactory.Models;
 using static SmartFactory.Models.Parameters;
+using Avalonia.Controls.Converters;
+using System.Collections.Generic;
+using Avalonia.Threading;
 
 namespace SmartFactory.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    Robot robot;
-    public double RobotX => robot.Location.X; //property die auf eine property zugreift die auf eine lokale variable zugreift
-    public double RobotY => robot.Location.Y;
-    public int AnzeigeAngle => robot.Angle;
-    public double AnzeigeX => RobotX - robot.Borders.Left;
-    public double AnzeigeY => RobotY - robot.Borders.Top;
+    Factory factory;
+    DispatcherTimer timer;
+    private readonly Stopwatch stopwatch = new();
+    public double RobotX => factory.RobotX; //property die auf eine property zugreift die auf eine lokale variable zugreift
+    public double RobotY => factory.RobotY;
+    public double AnzeigeAngle => factory.AnzeigeAngle;
+    public double AnzeigeX => RobotX - factory.Borders.Left;
+    public double AnzeigeY => RobotY - factory.Borders.Top;
+    public IReadOnlyList<ProductionLine> LinesView => factory.ProductionLines;
+    public int TickCount => factory.TickCount;
+    public string Laufzeit => $"{(int)stopwatch.Elapsed.TotalSeconds} s";
+
+    //liste mit mainview und bricks
+    public List<LegoBricksViewModel> BricksView { get; } = new List<LegoBricksViewModel>();
 
 
     public MainViewModel()
     {
-        Point point = new Point(48, 48);
-        Rectangle borders = new Rectangle(48, 48, 505, 505);
-        int angle = 0;
-        robot = new Robot(point, borders, angle);
+        factory = new Factory();
+        foreach (var brick in factory.Bricks)
+        {
+            BricksView.Add(new LegoBricksViewModel(brick));
+        }
+        timer = new DispatcherTimer();
+        timer.Interval = TimeSpan.FromMilliseconds(timerInterval);
+        timer.Tick += Timer_Tick;
+    }
+    private void Timer_Tick(object? sender, EventArgs e)
+    {
+        factory.LegoBricksBewegen();
+        NotifyBricksPoseChanged();
+        OnPropertyChanged(nameof(TickCount));
+        OnPropertyChanged(nameof(Laufzeit));
+    }
+    public void Start()
+    {
+        stopwatch.Start();
+        timer.Start();
+    }
 
+    public void Stop()
+    {
+        timer.Stop();
+        stopwatch.Stop();
+        OnPropertyChanged(nameof(Laufzeit));
+    }
+
+    public void ResetAngle()
+    {
+        factory.ResetRobotAngle();
+        OnPropertyChanged(nameof(AnzeigeAngle));
     }
     public void MoveUp()
     {
-        robot.Bewegen(Direction.up);
+        factory.MoveRobot(Direction.up);
+        OnPropertyChanged(nameof(RobotX));
+        OnPropertyChanged(nameof(AnzeigeX));
         OnPropertyChanged(nameof(RobotY));
         OnPropertyChanged(nameof(AnzeigeY));
     }
     public void MoveDown()
     {
-        robot.Bewegen(Direction.down);
+        factory.MoveRobot(Direction.down);
+        OnPropertyChanged(nameof(RobotX));
+        OnPropertyChanged(nameof(AnzeigeX));
         OnPropertyChanged(nameof(RobotY));
         OnPropertyChanged(nameof(AnzeigeY));
     }
     public void MoveLeft()
     {
-        robot.Bewegen(Direction.left);
+        factory.MoveRobot(Direction.left);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(AnzeigeX));
+        OnPropertyChanged(nameof(RobotY));
+        OnPropertyChanged(nameof(AnzeigeY));
     }
     public void MoveRight()
     {
-        robot.Bewegen(Direction.right);
+        factory.MoveRobot(Direction.right);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(AnzeigeX));
+        OnPropertyChanged(nameof(RobotY));
+        OnPropertyChanged(nameof(AnzeigeY));
     }   
     public void MoveRightANDup()
     {
-        robot.Bewegen(Direction.rightANDup);
+        factory.MoveRobot(Direction.rightANDup);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(AnzeigeX));
         OnPropertyChanged(nameof(RobotY));
@@ -59,7 +108,7 @@ public partial class MainViewModel : ViewModelBase
     }  
     public void MoveRightANDdown()
     {
-        robot.Bewegen(Direction.rightANDdown);
+        factory.MoveRobot(Direction.rightANDdown);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(AnzeigeX));
         OnPropertyChanged(nameof(RobotY));
@@ -67,7 +116,7 @@ public partial class MainViewModel : ViewModelBase
     }  
     public void MoveLeftANDup()
     {
-        robot.Bewegen(Direction.leftANDup);
+        factory.MoveRobot(Direction.leftANDup);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(AnzeigeX));
         OnPropertyChanged(nameof(RobotY));
@@ -75,7 +124,7 @@ public partial class MainViewModel : ViewModelBase
     }  
     public void MoveLeftANDdown()
     {
-        robot.Bewegen(Direction.leftANDdown);
+        factory.MoveRobot(Direction.leftANDdown);
         OnPropertyChanged(nameof(RobotX));
         OnPropertyChanged(nameof(AnzeigeX));
         OnPropertyChanged(nameof(RobotY));
@@ -83,12 +132,27 @@ public partial class MainViewModel : ViewModelBase
     }  
     public void TurnLeft()
     {
-        robot.Bewegen(Direction.turnLeft);
+        factory.MoveRobot(Direction.turnLeft);
         OnPropertyChanged(nameof(AnzeigeAngle));
     }
     public void TurnRight()
     {
-        robot.Bewegen(Direction.turnRight);
+        factory.MoveRobot(Direction.turnRight);
         OnPropertyChanged(nameof(AnzeigeAngle));
     }
+    private void NotifyRobotPoseChanged(){
+        
+        OnPropertyChanged(nameof(RobotX));
+        OnPropertyChanged(nameof(RobotY));
+        OnPropertyChanged(nameof(AnzeigeX));
+        OnPropertyChanged(nameof(AnzeigeY));
+        OnPropertyChanged(nameof(AnzeigeAngle));
+    }
+    private void NotifyBricksPoseChanged(){
+        foreach (var brick in BricksView)
+        { 
+            brick.Refresh();
+        }
+    }
+
 }
