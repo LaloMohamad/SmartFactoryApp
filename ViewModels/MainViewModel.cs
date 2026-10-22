@@ -1,46 +1,46 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Drawing;
+using System.Collections.Generic;
 using System.Diagnostics;
+using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using SmartFactory.Models;
 using static SmartFactory.Models.Parameters;
-using Avalonia.Controls.Converters;
-using System.Collections.Generic;
-using Avalonia.Threading;
 
 namespace SmartFactory.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    Factory factory;
-    DispatcherTimer timer;
+    private readonly Factory factory = new();
+    private readonly DispatcherTimer timer;
     private readonly Stopwatch stopwatch = new();
-    public double RobotX => factory.RobotX; //property die auf eine property zugreift die auf eine lokale variable zugreift
+    [ObservableProperty] private int orderYellow;
+    [ObservableProperty] private int orderBlue;
+    [ObservableProperty] private int orderRed;
+    [ObservableProperty] private int orderGreen;
+    public int DeliveredYellow => 0;
+    public int DeliveredBlue => 0;
+    public int DeliveredRed => 0;
+    public int DeliveredGreen => 0;
+
+    public double RobotX => factory.RobotX;
     public double RobotY => factory.RobotY;
     public double AnzeigeAngle => factory.AnzeigeAngle;
-    public double AnzeigeX => RobotX - factory.Borders.Left;
-    public double AnzeigeY => RobotY - factory.Borders.Top;
+    public double AnzeigeX => Math.Round(RobotX - factory.Borders.Left);
+    public double AnzeigeY => Math.Round(RobotY - factory.Borders.Top);
     public IReadOnlyList<ProductionLine> LinesView => factory.ProductionLines;
     public int TickCount => factory.TickCount;
     public string Laufzeit => $"{(int)stopwatch.Elapsed.TotalSeconds} s";
-
-    //liste mit mainview und bricks
-    public List<LegoBricksViewModel> BricksView { get; } = new List<LegoBricksViewModel>();
-
+    public List<LegoBricksViewModel> BricksView { get; } = new();
 
     public MainViewModel()
     {
-        factory = new Factory();
-        foreach (var brick in factory.Bricks)
-        {
+        foreach (LegoBrick brick in factory.Bricks)
             BricksView.Add(new LegoBricksViewModel(brick));
-        }
-        timer = new DispatcherTimer();
-        timer.Interval = TimeSpan.FromMilliseconds(timerInterval);
+
+        timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(timerInterval) };
         timer.Tick += Timer_Tick;
     }
+
     private void Timer_Tick(object? sender, EventArgs e)
     {
         factory.LegoBricksBewegen();
@@ -48,6 +48,7 @@ public partial class MainViewModel : ViewModelBase
         OnPropertyChanged(nameof(TickCount));
         OnPropertyChanged(nameof(Laufzeit));
     }
+
     public void Start()
     {
         stopwatch.Start();
@@ -64,95 +65,47 @@ public partial class MainViewModel : ViewModelBase
     public void ResetAngle()
     {
         factory.ResetRobotAngle();
-        OnPropertyChanged(nameof(AnzeigeAngle));
-    }
-    public void MoveUp()
-    {
-        factory.MoveRobot(Direction.up);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(AnzeigeX));
-        OnPropertyChanged(nameof(RobotY));
-        OnPropertyChanged(nameof(AnzeigeY));
-    }
-    public void MoveDown()
-    {
-        factory.MoveRobot(Direction.down);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(AnzeigeX));
-        OnPropertyChanged(nameof(RobotY));
-        OnPropertyChanged(nameof(AnzeigeY));
-    }
-    public void MoveLeft()
-    {
-        factory.MoveRobot(Direction.left);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(AnzeigeX));
-        OnPropertyChanged(nameof(RobotY));
-        OnPropertyChanged(nameof(AnzeigeY));
-    }
-    public void MoveRight()
-    {
-        factory.MoveRobot(Direction.right);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(AnzeigeX));
-        OnPropertyChanged(nameof(RobotY));
-        OnPropertyChanged(nameof(AnzeigeY));
-    }   
-    public void MoveRightANDup()
-    {
-        factory.MoveRobot(Direction.rightANDup);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(AnzeigeX));
-        OnPropertyChanged(nameof(RobotY));
-        OnPropertyChanged(nameof(AnzeigeY));
-    }  
-    public void MoveRightANDdown()
-    {
-        factory.MoveRobot(Direction.rightANDdown);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(AnzeigeX));
-        OnPropertyChanged(nameof(RobotY));
-        OnPropertyChanged(nameof(AnzeigeY));
-    }  
-    public void MoveLeftANDup()
-    {
-        factory.MoveRobot(Direction.leftANDup);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(AnzeigeX));
-        OnPropertyChanged(nameof(RobotY));
-        OnPropertyChanged(nameof(AnzeigeY));
-    }  
-    public void MoveLeftANDdown()
-    {
-        factory.MoveRobot(Direction.leftANDdown);
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(AnzeigeX));
-        OnPropertyChanged(nameof(RobotY));
-        OnPropertyChanged(nameof(AnzeigeY));
-    }  
-    public void TurnLeft()
-    {
-        factory.MoveRobot(Direction.turnLeft);
-        OnPropertyChanged(nameof(AnzeigeAngle));
-    }
-    public void TurnRight()
-    {
-        factory.MoveRobot(Direction.turnRight);
-        OnPropertyChanged(nameof(AnzeigeAngle));
-    }
-    private void NotifyRobotPoseChanged(){
-        
-        OnPropertyChanged(nameof(RobotX));
-        OnPropertyChanged(nameof(RobotY));
-        OnPropertyChanged(nameof(AnzeigeX));
-        OnPropertyChanged(nameof(AnzeigeY));
-        OnPropertyChanged(nameof(AnzeigeAngle));
-    }
-    private void NotifyBricksPoseChanged(){
-        foreach (var brick in BricksView)
-        { 
-            brick.Refresh();
-        }
+        NotifyRobotPoseChanged();
+        NotifyBricksPoseChanged();
     }
 
+    public void Undock()
+    {
+        factory.Undock();
+        NotifyRobotPoseChanged();
+        NotifyBricksPoseChanged();
+    }
+
+    public void MoveOnce(Direction direction)
+    {
+        factory.MoveRobot(direction);
+        NotifyRobotPoseChanged();
+        NotifyBricksPoseChanged();
+    }
+
+    public void MoveUp() => MoveOnce(Direction.up);
+    public void MoveDown() => MoveOnce(Direction.down);
+    public void MoveLeft() => MoveOnce(Direction.left);
+    public void MoveRight() => MoveOnce(Direction.right);
+    public void MoveRightANDup() => MoveOnce(Direction.rightANDup);
+    public void MoveRightANDdown() => MoveOnce(Direction.rightANDdown);
+    public void MoveLeftANDup() => MoveOnce(Direction.leftANDup);
+    public void MoveLeftANDdown() => MoveOnce(Direction.leftANDdown);
+    public void TurnLeft() => MoveOnce(Direction.turnLeft);
+    public void TurnRight() => MoveOnce(Direction.turnRight);
+
+    private void NotifyRobotPoseChanged()
+    {
+        OnPropertyChanged(nameof(RobotX));
+        OnPropertyChanged(nameof(RobotY));
+        OnPropertyChanged(nameof(AnzeigeX));
+        OnPropertyChanged(nameof(AnzeigeY));
+        OnPropertyChanged(nameof(AnzeigeAngle));
+    }
+
+    private void NotifyBricksPoseChanged()
+    {
+        foreach (LegoBricksViewModel brick in BricksView)
+            brick.Refresh();
+    }
 }

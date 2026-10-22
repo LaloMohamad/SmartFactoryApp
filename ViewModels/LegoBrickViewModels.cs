@@ -26,8 +26,8 @@ public partial class LegoBricksViewModel : ViewModelBase
     }
     public void Refresh()
     {
-        X = brick.Location.X;
-        Y = brick.Location.Y;
+        X = brick.DisplayX;
+        Y = brick.DisplayY;
         Angle = brick.Angle;
     }
 }

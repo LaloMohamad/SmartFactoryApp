@@ -4,10 +4,12 @@ using System.Drawing;
 
 namespace SmartFactory.Models;
 
+public enum ProductionLineKind { Colour, Recycle, Delivery }
+
 public class ProductionLine
 {
-    public const int Width = 105;
-    public const int Height = 18;
+    public int Width { get; }
+    public int Height { get; }
 
     private readonly List<LegoBrick> bricks = new();
     private readonly Point[] startingLocations;
@@ -18,15 +20,19 @@ public class ProductionLine
     public Point Location { get; }
     public double Angle { get; }
     public Parameters.LegoColour Colour { get; }
+    public ProductionLineKind Kind { get; }
     public IReadOnlyList<LegoBrick> Bricks => bricks;
     public int X => Location.X;
     public int Y => Location.Y;
 
-    public ProductionLine(Point location, double angle, Parameters.LegoColour colour, int brickSide)
+    public ProductionLine(Point location, double angle, Parameters.LegoColour colour, int brickSide, ProductionLineKind kind = ProductionLineKind.Colour)
     {
         Location = location;
         Angle = angle;
         Colour = colour;
+        Kind = kind;
+        Width = kind == ProductionLineKind.Delivery ? 180 : 105;
+        Height = kind == ProductionLineKind.Delivery ? 44 : 18;
 
         double radians = angle * Math.PI / 180.0;
         directionX = Math.Cos(radians);
@@ -36,8 +42,9 @@ public class ProductionLine
         double centerX = location.X + Width / 2.0;
         double centerY = location.Y + Height / 2.0;
 
-        startingLocations = new Point[Parameters.bricksPerLine];
-        for (int i = 0; i < Parameters.bricksPerLine; i++)
+        int brickCount = kind == ProductionLineKind.Colour ? Parameters.bricksPerLine : 0;
+        startingLocations = new Point[brickCount];
+        for (int i = 0; i < brickCount; i++)
         {
             int alongLine = -33 + i * 22;
             var size = i % 2 == 0 ? Parameters.LegoSize.small : Parameters.LegoSize.large;
@@ -52,6 +59,8 @@ public class ProductionLine
 
     public void Bewegen()
     {
+        if (Kind != ProductionLineKind.Colour)
+            return;
         const int ticksPerCycle = 40;
         const double amplitude = 15;
         tickCount = (tickCount + 1) % ticksPerCycle;
@@ -59,10 +68,12 @@ public class ProductionLine
 
         for (int i = 0; i < bricks.Count; i++)
         {
+            if (!bricks[i].OnProductionLine)
+                continue;
+
             Point start = startingLocations[i];
-            bricks[i].Location = new Point(
-                start.X + (int)Math.Round(distance * directionX),
-                start.Y + (int)Math.Round(distance * directionY));
+            bricks[i].SetPosition(start.X + distance * directionX,
+                                  start.Y + distance * directionY);
         }
     }
 }

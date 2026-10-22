@@ -1,74 +1,76 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SmartFactory.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SmartFactory.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Width = "900"
-        Height = "600"
-        Title="SmartFactory">
-        
-
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainViewModel />
-    </Design.DataContext>
-
+        Width="900" Height="600" Title="SmartFactory – Labor 3">
+    <Design.DataContext><vm:MainViewModel /></Design.DataContext>
     <Grid>
-     <Image Source="avares://SmartFactory/Assets/factory_plan.png"
-           HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None"/>
- 
-    <Canvas x:Name="canvasFactory" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="900" >
-        <TextBlock Canvas.Left="58" Canvas.Top="59" Text="{Binding Laufzeit}" Foreground="#E22E2E" FontSize="23" />
-        <Canvas x:Name="productionRed" Canvas.Left="{Binding LinesView[0].X}" Canvas.Top="{Binding LinesView[0].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
-            <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[0].Angle}" /></Canvas.RenderTransform>
-            <Rectangle Width="105" Height="18" Fill="#D92D32" Stroke="White" StrokeThickness="2" />
-            <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-        </Canvas>
-        <Canvas x:Name="productionBlue" Canvas.Left="{Binding LinesView[1].X}" Canvas.Top="{Binding LinesView[1].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
-            <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[1].Angle}" /></Canvas.RenderTransform>
-            <Rectangle Width="105" Height="18" Fill="#315FD5" Stroke="White" StrokeThickness="2" />
-            <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-        </Canvas>
-        <Canvas x:Name="productionYellow" Canvas.Left="{Binding LinesView[2].X}" Canvas.Top="{Binding LinesView[2].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
-            <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[2].Angle}" /></Canvas.RenderTransform>
-            <Rectangle Width="105" Height="18" Fill="#E8C600" Stroke="White" StrokeThickness="2" />
-            <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-        </Canvas>
-        <Canvas x:Name="productionGreen" Canvas.Left="{Binding LinesView[3].X}" Canvas.Top="{Binding LinesView[3].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
-            <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[3].Angle}" /></Canvas.RenderTransform>
-            <Rectangle Width="105" Height="18" Fill="#2A9D48" Stroke="White" StrokeThickness="2" />
-            <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-            <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
-        </Canvas>
-      
-        <Grid Height="120" Width="180" Canvas.Left="670" Canvas.Top="450" RowDefinitions="40,40,40" ColumnDefinitions="60,60,60">
-            <Button x:Name="LeftANDupButton" Grid.Row="0" Grid.Column="0" Content="↖" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveLeftANDup_Click" />
-            <Button x:Name="UpButton" Grid.Row="0" Grid.Column="1" Content="↑" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveUp_Click" />
-            <Button x:Name="RightANDupButton" Grid.Row="0" Grid.Column="2" Content="↗" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveRightANDup_Click" />
-            <Button x:Name="LeftButton" Grid.Row="1" Grid.Column="0" Content="←" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveLeft_Click" />
-            <Button x:Name="CenterButton" Grid.Row="1" Grid.Column="1" Content="■" Margin="2" FontSize="19" Background="#45525A" Foreground="White" />
-            <Button x:Name="RightButton" Grid.Row="1" Grid.Column="2" Content="→" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveRight_Click" />
-            <Button x:Name="LeftANDdownButton" Grid.Row="2" Grid.Column="0" Content="↙" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveLeftANDdown_Click" />
-            <Button x:Name="DownButton" Grid.Row="2" Grid.Column="1" Content="↓" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveDown_Click" />
-            <Button x:Name="RightANDdownButton" Grid.Row="2" Grid.Column="2" Content="↘" Margin="2" FontSize="19" Background="#45525A" Foreground="White" Click="MoveRightANDdown_Click" />
-        </Grid>
-
+        <Image Source="avares://SmartFactory/Assets/factory_plan.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" />
+        <Canvas Width="900" Height="600" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock Canvas.Left="55" Canvas.Top="54" Text="X:" Foreground="#D22" FontSize="18" />
+            <TextBlock Canvas.Left="80" Canvas.Top="54" Text="{Binding AnzeigeX}" Foreground="#D22" FontSize="18" />
+            <TextBlock Canvas.Left="55" Canvas.Top="76" Text="Y:" Foreground="#D22" FontSize="18" />
+            <TextBlock Canvas.Left="80" Canvas.Top="76" Text="{Binding AnzeigeY}" Foreground="#D22" FontSize="18" />
+            <TextBlock Canvas.Left="55" Canvas.Top="98" Text="Angle:" Foreground="#D22" FontSize="18" />
+            <TextBlock Canvas.Left="118" Canvas.Top="98" Text="{Binding AnzeigeAngle}" Foreground="#D22" FontSize="18" />
+            <TextBlock Canvas.Left="155" Canvas.Top="55" Text="{Binding Laufzeit}" Foreground="#D22" FontSize="16" />
+            <Canvas x:Name="productionRed" Canvas.Left="{Binding LinesView[0].X}" Canvas.Top="{Binding LinesView[0].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
+                <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[0].Angle}" /></Canvas.RenderTransform>
+                <Border Width="105" Height="18" CornerRadius="9" Background="#D92D32" BorderBrush="White" BorderThickness="2" />
+                <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            </Canvas>
+            <Canvas x:Name="productionBlue" Canvas.Left="{Binding LinesView[1].X}" Canvas.Top="{Binding LinesView[1].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
+                <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[1].Angle}" /></Canvas.RenderTransform>
+                <Border Width="105" Height="18" CornerRadius="9" Background="#315FD5" BorderBrush="White" BorderThickness="2" />
+                <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            </Canvas>
+            <Canvas x:Name="productionYellow" Canvas.Left="{Binding LinesView[2].X}" Canvas.Top="{Binding LinesView[2].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
+                <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[2].Angle}" /></Canvas.RenderTransform>
+                <Border Width="105" Height="18" CornerRadius="9" Background="#E8C600" BorderBrush="White" BorderThickness="2" />
+                <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            </Canvas>
+            <Canvas x:Name="productionGreen" Canvas.Left="{Binding LinesView[3].X}" Canvas.Top="{Binding LinesView[3].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
+                <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[3].Angle}" /></Canvas.RenderTransform>
+                <Border Width="105" Height="18" CornerRadius="9" Background="#2A9D48" BorderBrush="White" BorderThickness="2" />
+                <Ellipse Canvas.Left="7" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="32" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+                <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
+            </Canvas>
+            <Canvas x:Name="recycleLine" Canvas.Left="{Binding LinesView[4].X}" Canvas.Top="{Binding LinesView[4].Y}" Width="105" Height="18">
+                <Rectangle Width="105" Height="18" Fill="White" Stroke="Black" StrokeThickness="1" />
+                <Rectangle Canvas.Left="2" Canvas.Top="2" Width="25" Height="14" Fill="#E8C600" />
+                <Rectangle Canvas.Left="27" Canvas.Top="2" Width="25" Height="14" Fill="#D92D32" />
+                <Rectangle Canvas.Left="52" Canvas.Top="2" Width="25" Height="14" Fill="#2A9D48" />
+                <Rectangle Canvas.Left="77" Canvas.Top="2" Width="26" Height="14" Fill="#315FD5" />
+            </Canvas>
+            <Canvas x:Name="deliveryLine" Canvas.Left="{Binding LinesView[5].X}" Canvas.Top="{Binding LinesView[5].Y}" Width="180" Height="44">
+                <Border Width="180" Height="44" Background="White" BorderBrush="#25313A" BorderThickness="1" />
+                <Border Canvas.Left="0" Canvas.Top="0" Width="60" Height="34" Background="#F3C1B6" BorderBrush="#25313A" BorderThickness="1">
+                    <TextBlock Text="Recycle" FontSize="11" FontWeight="Bold" Foreground="#17212B" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Canvas.Left="60" Canvas.Top="0" Width="60" Height="34" Background="#FFF5A6" BorderBrush="#25313A" BorderThickness="1">
+                    <TextBlock Text="Delivery" FontSize="11" FontWeight="Bold" Foreground="#17212B" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <Border Canvas.Left="120" Canvas.Top="0" Width="60" Height="34" Background="#C8EDC2" BorderBrush="#25313A" BorderThickness="1">
+                    <TextBlock Text="Customer" FontSize="11" FontWeight="Bold" Foreground="#17212B" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+            </Canvas>
+            <Rectangle x:Name="RobotRectangle" Canvas.Left="{Binding RobotX}" Canvas.Top="{Binding RobotY}" Width="30" Height="66" RenderTransformOrigin="50%,50%">
+                <Rectangle.RenderTransform><RotateTransform Angle="{Binding AnzeigeAngle}" /></Rectangle.RenderTransform>
+                <Rectangle.Fill><ImageBrush Source="avares://SmartFactory/Assets/robot_2.png" Stretch="UniformToFill" /></Rectangle.Fill>
+            </Rectangle>
         <Rectangle x:Name="brick0" Width="{Binding BricksView[0].Width}" Height="12" Fill="{Binding BricksView[0].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
                    Canvas.Left="{Binding BricksView[0].X}" Canvas.Top="{Binding BricksView[0].Y}">
                    <Rectangle.RenderTransform>
@@ -93,7 +95,7 @@
                        <RotateTransform Angle="{Binding BricksView[3].Angle}" />
                    </Rectangle.RenderTransform>
                 </Rectangle>
-        
+
         <Rectangle x:Name="brick4" Width="{Binding BricksView[4].Width}" Height="12" Fill="{Binding BricksView[4].Fill}" Stroke="White" StrokeThickness="0.5" RenderTransformOrigin="50%,50%"
                    Canvas.Left="{Binding BricksView[4].X}" Canvas.Top="{Binding BricksView[4].Y}">
             <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[4].Angle}" /></Rectangle.RenderTransform>
@@ -143,27 +145,39 @@
             <Rectangle.RenderTransform><RotateTransform Angle="{Binding BricksView[15].Angle}" /></Rectangle.RenderTransform>
         </Rectangle>
 
-        <Button x:Name="StartButton" Content="Start" Canvas.Left="650" Canvas.Top="294" Width="95" Height="40" FontSize="18" FontWeight="Bold" Background="#287A42" Foreground="White" Click="Start_Click" />
-        <Button x:Name="StopButton" Content="Stop" Canvas.Left="755" Canvas.Top="294" Width="95" Height="40" FontSize="18" FontWeight="Bold" Background="#A32F2F" Foreground="White" Click="Stop_Click" />
-        <Grid Height="80" Width="200" Canvas.Left="650" Canvas.Top="350">
-            <Button x:Name="TurnLeft" Content="Turn Left" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" FontSize="16" Background="#974B11" Foreground="White" Click="TurnLeft_Click" />
-            <Button x:Name="TurnRight" Content="Turn Right" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" FontSize="16" Background="#974B11" Foreground="White" Click="TurnRight_Click" />
-            <Button x:Name="ResetAngle" Content="0°" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="60" FontSize="16" Background="#45525A" Foreground="White" Click="ResetAngle_Click" />
-        </Grid>
-
-        <Rectangle x:Name="RobotRectangle" Canvas.Left="{Binding RobotX}" Canvas.Top="{Binding RobotY}" Width="70" Height="50" Stroke="Black" StrokeThickness="2" RenderTransformOrigin="50%,50%">
-            <Rectangle.RenderTransform>
-                <RotateTransform Angle="{Binding AnzeigeAngle}" />
-            </Rectangle.RenderTransform>
-            <Rectangle.Fill>
-               <ImageBrush Source="avares://SmartFactory/Assets/robot_platform.png" Stretch="UniformToFill" />
-            </Rectangle.Fill>
-        </Rectangle>
-        <TextBox x:Name="PositionTextBox_X" Canvas.Left="650" Canvas.Top="100" Width="35" Height="30" FontSize="16" IsReadOnly="True" Text="{Binding AnzeigeX}" />
-        <TextBox x:Name="PositionTextBox_Y" Canvas.Left="650" Canvas.Top="150" Width="35" Height="30" FontSize="16" IsReadOnly="True" Text="{Binding AnzeigeY}" />
-        <TextBox x:Name="PositionTextBox_Angle" Canvas.Left="740" Canvas.Top="100" Width="35" Height="30" FontSize="16" IsReadOnly="True" Text="{Binding AnzeigeAngle}" />
-    </Canvas>
-  
-</Grid>
-
+            <TextBlock Canvas.Left="625" Canvas.Top="55" Text="Order" Foreground="#17212B" FontSize="21" FontWeight="Bold" />
+            <TextBlock Canvas.Left="788" Canvas.Top="55" Text="Delivered" Foreground="#17212B" FontSize="21" FontWeight="Bold" />
+            <Border Canvas.Left="625" Canvas.Top="100" Width="86" Height="32" Background="#E8C600"><TextBlock Text="Yellow" Foreground="Black" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+            <TextBox Canvas.Left="720" Canvas.Top="100" Width="57" Height="32" Text="{Binding OrderYellow, Mode=TwoWay}" Foreground="#17212B" Background="#F8F8F1" TextAlignment="Right" />
+            <TextBox Canvas.Left="800" Canvas.Top="100" Width="57" Height="32" Text="{Binding DeliveredYellow}" IsReadOnly="True" Foreground="#17212B" Background="#F8F8F1" TextAlignment="Right" />
+            <Border Canvas.Left="625" Canvas.Top="137" Width="86" Height="32" Background="#315FD5"><TextBlock Text="Blue" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+            <TextBox Canvas.Left="720" Canvas.Top="137" Width="57" Height="32" Text="{Binding OrderBlue, Mode=TwoWay}" Foreground="#17212B" Background="#F8F8F1" TextAlignment="Right" />
+            <TextBox Canvas.Left="800" Canvas.Top="137" Width="57" Height="32" Text="{Binding DeliveredBlue}" IsReadOnly="True" Foreground="#17212B" Background="#F8F8F1" TextAlignment="Right" />
+            <Border Canvas.Left="625" Canvas.Top="174" Width="86" Height="32" Background="#D92D32"><TextBlock Text="Red" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+            <TextBox Canvas.Left="720" Canvas.Top="174" Width="57" Height="32" Text="{Binding OrderRed, Mode=TwoWay}" Foreground="#17212B" Background="#F8F8F1" TextAlignment="Right" />
+            <TextBox Canvas.Left="800" Canvas.Top="174" Width="57" Height="32" Text="{Binding DeliveredRed}" IsReadOnly="True" Foreground="#17212B" Background="#F8F8F1" TextAlignment="Right" />
+            <Border Canvas.Left="625" Canvas.Top="211" Width="86" Height="32" Background="#2A9D48"><TextBlock Text="Green" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+            <TextBox Canvas.Left="720" Canvas.Top="211" Width="57" Height="32" Text="{Binding OrderGreen, Mode=TwoWay}" Foreground="#17212B" Background="#F8F8F1" TextAlignment="Right" />
+            <TextBox Canvas.Left="800" Canvas.Top="211" Width="57" Height="32" Text="{Binding DeliveredGreen}" IsReadOnly="True" Foreground="#17212B" Background="#F8F8F1" TextAlignment="Right" />
+            <Button x:Name="StartButton" Content="Start" Canvas.Left="625" Canvas.Top="274" Width="110" Height="38" Background="#287A42" Foreground="White" Click="Start_Click" />
+            <Button x:Name="StopButton" Content="Stop" Canvas.Left="745" Canvas.Top="274" Width="110" Height="38" Background="#A32F2F" Foreground="White" Click="Stop_Click" />
+            <RadioButton Canvas.Left="625" Canvas.Top="390" Content="Move" Foreground="#17212B" GroupName="MovementMode" IsChecked="True" Click="MoveMode_Checked" />
+            <RadioButton Canvas.Left="625" Canvas.Top="421" Content="Step" Foreground="#17212B" GroupName="MovementMode" Click="StepMode_Checked" />
+            <Button x:Name="UndockButton" Content="Undock" Foreground="White" Background="#62409A" FontWeight="Bold" Canvas.Left="625" Canvas.Top="472" Width="85" Height="36" Click="Undock_Click" />
+            <Grid Canvas.Left="720" Canvas.Top="377" Width="144" Height="152" RowDefinitions="38,38,38,38" ColumnDefinitions="48,48,48">
+                <Button x:Name="LeftANDupButton" Grid.Row="0" Grid.Column="0" Content="↖" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="MoveLeftANDup_Click" />
+                <Button x:Name="UpButton" Grid.Row="0" Grid.Column="1" Content="↑" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="MoveUp_Click" />
+                <Button x:Name="RightANDupButton" Grid.Row="0" Grid.Column="2" Content="↗" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="MoveRightANDup_Click" />
+                <Button x:Name="LeftButton" Grid.Row="1" Grid.Column="0" Content="←" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="MoveLeft_Click" />
+                <Button x:Name="CenterButton" Grid.Row="1" Grid.Column="1" Content="■" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="StopMovement_Click" />
+                <Button x:Name="RightButton" Grid.Row="1" Grid.Column="2" Content="→" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="MoveRight_Click" />
+                <Button x:Name="LeftANDdownButton" Grid.Row="2" Grid.Column="0" Content="↙" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="MoveLeftANDdown_Click" />
+                <Button x:Name="DownButton" Grid.Row="2" Grid.Column="1" Content="↓" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="MoveDown_Click" />
+                <Button x:Name="RightANDdownButton" Grid.Row="2" Grid.Column="2" Content="↘" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="MoveRightANDdown_Click" />
+                <Button x:Name="TurnLeftButton" Grid.Row="3" Grid.Column="0" Content="↶" Margin="2" FontSize="24" Background="#45525A" Foreground="White" Click="TurnLeft_Click" />
+                <Button x:Name="ResetAngleButton" Grid.Row="3" Grid.Column="1" Content="0°" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="ResetAngle_Click" />
+                <Button x:Name="TurnRightButton" Grid.Row="3" Grid.Column="2" Content="↷" Margin="2" FontSize="24" Background="#45525A" Foreground="White" Click="TurnRight_Click" />
+            </Grid>
+        </Canvas>
+    </Grid>
 </Window>
