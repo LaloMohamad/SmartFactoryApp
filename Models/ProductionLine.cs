@@ -4,6 +4,7 @@ using System.Drawing;
 
 namespace SmartFactory.Models;
 
+// Eine Linie kann Steine erzeugen oder als Recycling-/Lieferstation dienen.
 public enum ProductionLineKind { Colour, Recycle, Delivery }
 
 public class ProductionLine
@@ -12,7 +13,6 @@ public class ProductionLine
     public int Height { get; }
 
     private readonly List<LegoBrick> bricks = new();
-    private readonly Point[] startingLocations;
     private readonly double directionX;
     private readonly double directionY;
     private int tickCount;
@@ -31,8 +31,22 @@ public class ProductionLine
         Angle = angle;
         Colour = colour;
         Kind = kind;
-        Width = kind == ProductionLineKind.Delivery ? 180 : 105;
-        Height = kind == ProductionLineKind.Delivery ? 44 : 18;
+        // Labor4: dieselben Maße für Anzeige und Ablieferprüfung verwenden.
+        if (kind == ProductionLineKind.Delivery)
+        {
+            Width = ViewParameters.DeliveryLineWidth;
+            Height = ViewParameters.DeliveryLineHeight;
+        }
+        else if (kind == ProductionLineKind.Recycle)
+        {
+            Width = 132;
+            Height = 28;
+        }
+        else
+        {
+            Width = 105;
+            Height = 18;
+        }
 
         double radians = angle * Math.PI / 180.0;
         directionX = Math.Cos(radians);
@@ -42,18 +56,26 @@ public class ProductionLine
         double centerX = location.X + Width / 2.0;
         double centerY = location.Y + Height / 2.0;
 
-        int brickCount = kind == ProductionLineKind.Colour ? Parameters.bricksPerLine : 0;
-        startingLocations = new Point[brickCount];
+        int brickCount = 0;
+        if (kind == ProductionLineKind.Colour)
+            brickCount = Parameters.bricksPerLine;
+
         for (int i = 0; i < brickCount; i++)
         {
             int alongLine = -33 + i * 22;
-            var size = i % 2 == 0 ? Parameters.LegoSize.small : Parameters.LegoSize.large;
-            int brickWidth = size == Parameters.LegoSize.small ? 12 : 20;
+            Parameters.LegoSize size;
+            if (i % 2 == 0)
+                size = Parameters.LegoSize.small;
+            else
+                size = Parameters.LegoSize.large;
+
+            int brickWidth = 12;
+            if (size == Parameters.LegoSize.large)
+                brickWidth = 20;
             int x = (int)Math.Round(centerX + alongLine * directionX + 18 * normalX - brickWidth / 2.0);
             int y = (int)Math.Round(centerY + alongLine * directionY + 18 * normalY - 6);
             var pose = new Pose(x, y, angle);
             bricks.Add(new LegoBrick(pose, colour, size));
-            startingLocations[i] = pose.Location;
         }
     }
 
@@ -68,12 +90,24 @@ public class ProductionLine
 
         for (int i = 0; i < bricks.Count; i++)
         {
-            if (!bricks[i].OnProductionLine)
+            if (bricks[i].Status != Parameters.BrickStatus.OnProductionLine)
                 continue;
 
-            Point start = startingLocations[i];
+            Point start = bricks[i].LegoPose.Location;
             bricks[i].SetPosition(start.X + distance * directionX,
                                   start.Y + distance * directionY);
         }
+    }
+
+    // Labor4: Wenn ein Stein beim Kunden ankommt, belegt ein neuer Stein seinen alten Platz.
+    public LegoBrick? ReplaceBrick(LegoBrick oldBrick)
+    {
+        int index = bricks.IndexOf(oldBrick);
+        if (index < 0)
+            return null;
+
+        LegoBrick replacement = new LegoBrick(oldBrick.LegoPose, Colour, oldBrick.Size);
+        bricks[index] = replacement;
+        return replacement;
     }
 }

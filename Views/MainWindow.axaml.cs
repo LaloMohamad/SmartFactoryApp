@@ -16,11 +16,24 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        movementTimer.Tick += (_, _) => ViewModel?.MoveOnce(activeDirection);
-        Deactivated += (_, _) => StopMovement();
+        movementTimer.Tick += MovementTimer_Tick;
+        Deactivated += Window_Deactivated;
     }
 
+    // Das ViewModel kann beim Öffnen des Fensters noch fehlen.
     private MainViewModel? ViewModel => DataContext as MainViewModel;
+
+    private void MovementTimer_Tick(object? sender, EventArgs e)
+    {
+        MainViewModel? viewModel = ViewModel;
+        if (viewModel != null)
+            viewModel.MoveOnce(activeDirection);
+    }
+
+    private void Window_Deactivated(object? sender, EventArgs e)
+    {
+        StopMovement();
+    }
 
     private void StopMovement()
     {
@@ -42,15 +55,15 @@ public partial class MainWindow : Window
 
     private void DirectionCommand(Parameters.Direction direction)
     {
-        if (stepMode)
-        {
-            ViewModel?.MoveOnce(direction);
-            return;
-        }
+        if (!stepMode)
+            activeDirection = direction;
 
-        activeDirection = direction;
-        ViewModel?.MoveOnce(direction);
-        movementTimer.Start();
+        MainViewModel? viewModel = ViewModel;
+        if (viewModel != null)
+            viewModel.MoveOnce(direction);
+
+        if (!stepMode)
+            movementTimer.Start();
     }
 
     private void MoveUp_Click(object sender, RoutedEventArgs e) => DirectionCommand(Parameters.Direction.up);

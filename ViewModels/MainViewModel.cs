@@ -13,14 +13,17 @@ public partial class MainViewModel : ViewModelBase
     private readonly Factory factory = new();
     private readonly DispatcherTimer timer;
     private readonly Stopwatch stopwatch = new();
+    // ObservableProperty erzeugt die öffentlichen Order-Properties und meldet Änderungen an die View.
     [ObservableProperty] private int orderYellow;
     [ObservableProperty] private int orderBlue;
     [ObservableProperty] private int orderRed;
     [ObservableProperty] private int orderGreen;
-    public int DeliveredYellow => 0;
-    public int DeliveredBlue => 0;
-    public int DeliveredRed => 0;
-    public int DeliveredGreen => 0;
+    // Labor4: Die Lieferzähler kommen aus der Factory, die Eingabefelder bleiben editierbar.
+    public int DeliveredYellow => factory.DeliveredYellow;
+    public int DeliveredBlue => factory.DeliveredBlue;
+    public int DeliveredRed => factory.DeliveredRed;
+    public int DeliveredGreen => factory.DeliveredGreen;
+    public string UndockInfo { get; private set; } = "";
 
     public double RobotX => factory.RobotX;
     public double RobotY => factory.RobotY;
@@ -29,7 +32,14 @@ public partial class MainViewModel : ViewModelBase
     public double AnzeigeY => Math.Round(RobotY - factory.Borders.Top);
     public IReadOnlyList<ProductionLine> LinesView => factory.ProductionLines;
     public int TickCount => factory.TickCount;
-    public string Laufzeit => $"{(int)stopwatch.Elapsed.TotalSeconds} s";
+    public string Laufzeit
+    {
+        get
+        {
+            int seconds = (int)stopwatch.Elapsed.TotalSeconds;
+            return seconds + " s";
+        }
+    }
     public List<LegoBricksViewModel> BricksView { get; } = new();
 
     public MainViewModel()
@@ -47,6 +57,10 @@ public partial class MainViewModel : ViewModelBase
         NotifyBricksPoseChanged();
         OnPropertyChanged(nameof(TickCount));
         OnPropertyChanged(nameof(Laufzeit));
+        OnPropertyChanged(nameof(DeliveredYellow));
+        OnPropertyChanged(nameof(DeliveredBlue));
+        OnPropertyChanged(nameof(DeliveredRed));
+        OnPropertyChanged(nameof(DeliveredGreen));
     }
 
     public void Start()
@@ -69,9 +83,23 @@ public partial class MainViewModel : ViewModelBase
         NotifyBricksPoseChanged();
     }
 
+    // Labor4: Der Undock-Knopf zeigt auch den Grund für ein abgelehntes Ablegen.
     public void Undock()
     {
-        factory.Undock();
+        UndockResult result = factory.Undock();
+        switch (result)
+        {
+            case UndockResult.Success:
+                UndockInfo = "Stein an Delivery abgelegt";
+                break;
+            case UndockResult.NoBrick:
+                UndockInfo = "Kein Stein am Greifer";
+                break;
+            case UndockResult.WrongPlace:
+                UndockInfo = "Nur an Delivery ablegen";
+                break;
+        }
+        OnPropertyChanged(nameof(UndockInfo));
         NotifyRobotPoseChanged();
         NotifyBricksPoseChanged();
     }
@@ -82,17 +110,6 @@ public partial class MainViewModel : ViewModelBase
         NotifyRobotPoseChanged();
         NotifyBricksPoseChanged();
     }
-
-    public void MoveUp() => MoveOnce(Direction.up);
-    public void MoveDown() => MoveOnce(Direction.down);
-    public void MoveLeft() => MoveOnce(Direction.left);
-    public void MoveRight() => MoveOnce(Direction.right);
-    public void MoveRightANDup() => MoveOnce(Direction.rightANDup);
-    public void MoveRightANDdown() => MoveOnce(Direction.rightANDdown);
-    public void MoveLeftANDup() => MoveOnce(Direction.leftANDup);
-    public void MoveLeftANDdown() => MoveOnce(Direction.leftANDdown);
-    public void TurnLeft() => MoveOnce(Direction.turnLeft);
-    public void TurnRight() => MoveOnce(Direction.turnRight);
 
     private void NotifyRobotPoseChanged()
     {
@@ -105,7 +122,7 @@ public partial class MainViewModel : ViewModelBase
 
     private void NotifyBricksPoseChanged()
     {
-        foreach (LegoBricksViewModel brick in BricksView)
-            brick.Refresh();
+        for (int i = 0; i < BricksView.Count; i++)
+            BricksView[i].Refresh(factory.Bricks[i]);
     }
 }

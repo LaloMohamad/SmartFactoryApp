@@ -11,8 +11,12 @@ public class Robot : Beweger
 
     private double exactX;
     private double exactY;
-    private double movementAngle;
     private double dockAngleOffset;
+
+    // Labor4: Nur an der Delivery-Line darf ein Stein abgeliefert werden.
+    private static readonly Rectangle DeliveryLine = new Rectangle(
+        ViewParameters.DeliveryLinePosition,
+        new Size(ViewParameters.DeliveryLineWidth, ViewParameters.DeliveryLineHeight));
 
     public double ExactX => exactX;
     public double ExactY => exactY;
@@ -24,7 +28,6 @@ public class Robot : Beweger
     {
         exactX = location.X;
         exactY = location.Y;
-        movementAngle = Math.Truncate(angle / 5.0) * 5;
     }
 
     public Robot(Point location) : this(location, ViewParameters.Borders, 0) { }
@@ -35,14 +38,20 @@ public class Robot : Beweger
     public double DistanceTo(LegoBrick brick)
     {
         var tcp = ToolCenter;
-        double brickX = brick.DisplayX + BrickWidth(brick) / 2.0;
+        double brickX = brick.DisplayX + brick.Width / 2.0;
         double brickY = brick.DisplayY + 6;
-        return Math.Sqrt(Math.Pow(tcp.X - brickX, 2) + Math.Pow(tcp.Y - brickY, 2));
+        double dx = tcp.X - brickX;
+        double dy = tcp.Y - brickY;
+        return Math.Sqrt(dx * dx + dy * dy);
     }
 
     public bool TryDock(LegoBrick brick)
     {
-        if (DockedBrick != null || brick.Docked || DistanceTo(brick) > 10)
+        // Labor4: Ein Stein auf der Delivery-Line oder auf dem Weg dorthin darf nicht aufgenommen werden.
+        if (DockedBrick != null || DistanceTo(brick) > 10)
+            return false;
+        if (brick.Status != Parameters.BrickStatus.OnProductionLine &&
+            brick.Status != Parameters.BrickStatus.OnRecycleLine)
             return false;
 
         DockedBrick = brick;
@@ -52,15 +61,29 @@ public class Robot : Beweger
         return true;
     }
 
-    public LegoBrick? Undock()
+    // Labor4: Erfolg oder den konkreten Fehlergrund an die Oberfläche zurückgeben.
+    public Parameters.UndockResult Undock()
     {
         LegoBrick? brick = DockedBrick;
         if (brick == null)
-            return null;
+            return Parameters.UndockResult.NoBrick;
+
+        // Labor4: Location ist hier die linke obere Ecke; geprüft wird der Steinmittelpunkt.
+        Point brickCenter = new Point((int)Math.Round(brick.DisplayX + brick.Width / 2.0),
+                                      (int)Math.Round(brick.DisplayY + 6));
+        if (!Auflinie(DeliveryLine, brickCenter))
+            return Parameters.UndockResult.WrongPlace;
 
         DockedBrick = null;
         brick.Release();
-        return brick;
+        return Parameters.UndockResult.Success;
+    }
+
+    // Labor4: Toleranzbereich aus der Labor-4-Codeversion.
+    private static bool Auflinie(Rectangle linie, Point p)
+    {
+        linie.Inflate(10, 10);
+        return linie.Contains(p);
     }
 
     public void ResetAngle() => TryRotate(0);
@@ -78,22 +101,45 @@ public class Robot : Beweger
             return;
         }
 
-        (int localX, int localY) = direction switch
+        // Die Tasten geben eine Richtung relativ zum gedrehten Roboter vor.
+        int localX = 0;
+        int localY = 0;
+        switch (direction)
         {
-            Parameters.Direction.up => (0, -1),
-            Parameters.Direction.down => (0, 1),
-            Parameters.Direction.left => (-1, 0),
-            Parameters.Direction.right => (1, 0),
-            Parameters.Direction.leftANDup => (-1, -1),
-            Parameters.Direction.leftANDdown => (-1, 1),
-            Parameters.Direction.rightANDup => (1, -1),
-            Parameters.Direction.rightANDdown => (1, 1),
-            _ => (0, 0)
-        };
-        if (localX == 0 && localY == 0)
-            return;
+            case Parameters.Direction.up:
+                localY = -1;
+                break;
+            case Parameters.Direction.down:
+                localY = 1;
+                break;
+            case Parameters.Direction.left:
+                localX = -1;
+                break;
+            case Parameters.Direction.right:
+                localX = 1;
+                break;
+            case Parameters.Direction.leftANDup:
+                localX = -1;
+                localY = -1;
+                break;
+            case Parameters.Direction.leftANDdown:
+                localX = -1;
+                localY = 1;
+                break;
+            case Parameters.Direction.rightANDup:
+                localX = 1;
+                localY = -1;
+                break;
+            case Parameters.Direction.rightANDdown:
+                localX = 1;
+                localY = 1;
+                break;
+            default:
+                return;
+        }
 
-        double radians = movementAngle * Math.PI / 180.0;
+        // Sinus und Kosinus drehen diese Richtung in die Koordinaten der Fabrik.
+        double radians = Angle * Math.PI / 180.0;
         double cosine = Math.Cos(radians);
         double sine = Math.Sin(radians);
         double nextX = exactX + Parameters.step * (localX * cosine - localY * sine);
@@ -114,8 +160,6 @@ public class Robot : Beweger
             return;
 
         Angle = nextAngle;
-        if (Angle % 5 == 0)
-            movementAngle = Angle;
         PositionDockedBrick();
     }
 
@@ -125,13 +169,10 @@ public class Robot : Beweger
             return;
 
         var tcp = ToolCenter;
-        DockedBrick.SetPosition(tcp.X - BrickWidth(DockedBrick) / 2.0,
+        DockedBrick.SetPosition(tcp.X - DockedBrick.Width / 2.0,
                                tcp.Y - 6);
         DockedBrick.Angle = Angle + dockAngleOffset;
     }
-
-    private static int BrickWidth(LegoBrick brick) =>
-        brick.Size == Parameters.LegoSize.small ? 12 : 20;
 
     private static (double X, double Y) ToolCenterAt(double x, double y, double angle)
     {
@@ -165,25 +206,37 @@ public class Robot : Beweger
         return true;
     }
 
-    // Separating-axis test for the two rotated rectangles (robot and line).
+    // Zwei gedrehte Rechtecke berühren sich nur, wenn sie auf allen vier Achsen überlappen.
     private static bool IntersectsLine(double x, double y, double angle, ProductionLine line)
     {
         double robotRadians = angle * Math.PI / 180.0;
         double lineRadians = line.Angle * Math.PI / 180.0;
-        double rc = Math.Cos(robotRadians), rs = Math.Sin(robotRadians);
-        double lc = Math.Cos(lineRadians), ls = Math.Sin(lineRadians);
-        double dx = line.X + line.Width / 2.0 - (x + RobotWidth / 2.0);
-        double dy = line.Y + line.Height / 2.0 - (y + RobotHeight / 2.0);
-        double robotHalfWidth = RobotWidth / 2.0, robotHalfHeight = RobotHeight / 2.0;
-        double lineHalfWidth = line.Width / 2.0, lineHalfHeight = line.Height / 2.0;
-        (double X, double Y)[] axes = [(rc, rs), (-rs, rc), (lc, ls), (-ls, lc)];
+        double robotCos = Math.Cos(robotRadians);
+        double robotSin = Math.Sin(robotRadians);
+        double lineCos = Math.Cos(lineRadians);
+        double lineSin = Math.Sin(lineRadians);
+        double distanceX = line.X + line.Width / 2.0 - (x + RobotWidth / 2.0);
+        double distanceY = line.Y + line.Height / 2.0 - (y + RobotHeight / 2.0);
+        double robotHalfWidth = RobotWidth / 2.0;
+        double robotHalfHeight = RobotHeight / 2.0;
+        double lineHalfWidth = line.Width / 2.0;
+        double lineHalfHeight = line.Height / 2.0;
+        (double X, double Y)[] axes =
+        {
+            (robotCos, robotSin),
+            (-robotSin, robotCos),
+            (lineCos, lineSin),
+            (-lineSin, lineCos)
+        };
+
         foreach (var axis in axes)
         {
-            double distance = Math.Abs(dx * axis.X + dy * axis.Y);
-            double robotRadius = robotHalfWidth * Math.Abs(rc * axis.X + rs * axis.Y)
-                               + robotHalfHeight * Math.Abs(-rs * axis.X + rc * axis.Y);
-            double lineRadius = lineHalfWidth * Math.Abs(lc * axis.X + ls * axis.Y)
-                              + lineHalfHeight * Math.Abs(-ls * axis.X + lc * axis.Y);
+            double distance = Math.Abs(distanceX * axis.X + distanceY * axis.Y);
+            double robotRadius = robotHalfWidth * Math.Abs(robotCos * axis.X + robotSin * axis.Y)
+                               + robotHalfHeight * Math.Abs(-robotSin * axis.X + robotCos * axis.Y);
+            double lineRadius = lineHalfWidth * Math.Abs(lineCos * axis.X + lineSin * axis.Y)
+                              + lineHalfHeight * Math.Abs(-lineSin * axis.X + lineCos * axis.Y);
+            // Eine Lücke auf nur einer Achse schließt eine Kollision aus.
             if (distance >= robotRadius + lineRadius - 0.001)
                 return false;
         }

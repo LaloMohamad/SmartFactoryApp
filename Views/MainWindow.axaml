@@ -4,18 +4,28 @@
         x:Class="SmartFactory.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Width="900" Height="600" Title="SmartFactory – Labor 3">
+        Width="900" Height="600" Title="SmartFactory – Labor 4">
     <Design.DataContext><vm:MainViewModel /></Design.DataContext>
     <Grid>
         <Image Source="avares://SmartFactory/Assets/factory_plan.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" />
         <Canvas Width="900" Height="600" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <TextBlock Canvas.Left="55" Canvas.Top="54" Text="X:" Foreground="#D22" FontSize="18" />
-            <TextBlock Canvas.Left="80" Canvas.Top="54" Text="{Binding AnzeigeX}" Foreground="#D22" FontSize="18" />
-            <TextBlock Canvas.Left="55" Canvas.Top="76" Text="Y:" Foreground="#D22" FontSize="18" />
-            <TextBlock Canvas.Left="80" Canvas.Top="76" Text="{Binding AnzeigeY}" Foreground="#D22" FontSize="18" />
-            <TextBlock Canvas.Left="55" Canvas.Top="98" Text="Angle:" Foreground="#D22" FontSize="18" />
-            <TextBlock Canvas.Left="118" Canvas.Top="98" Text="{Binding AnzeigeAngle}" Foreground="#D22" FontSize="18" />
-            <TextBlock Canvas.Left="155" Canvas.Top="55" Text="{Binding Laufzeit}" Foreground="#D22" FontSize="16" />
+            <!-- Labor4: Positionsanzeige unter den Produktionslinien, frei von den Pfeilen. -->
+            <Border Canvas.Left="55" Canvas.Top="478" Width="175" Height="68" Padding="8,3" Background="#EAEAEA" CornerRadius="4">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="X:" Width="65" Foreground="#B92020" FontSize="16" />
+                        <TextBlock Text="{Binding AnzeigeX}" Foreground="#B92020" FontSize="16" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Y:" Width="65" Foreground="#B92020" FontSize="16" />
+                        <TextBlock Text="{Binding AnzeigeY}" Foreground="#B92020" FontSize="16" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Winkel:" Width="65" Foreground="#B92020" FontSize="16" />
+                        <TextBlock Text="{Binding AnzeigeAngle}" Foreground="#B92020" FontSize="16" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
             <Canvas x:Name="productionRed" Canvas.Left="{Binding LinesView[0].X}" Canvas.Top="{Binding LinesView[0].Y}" Width="105" Height="18" RenderTransformOrigin="50%,50%">
                 <Canvas.RenderTransform><RotateTransform Angle="{Binding LinesView[0].Angle}" /></Canvas.RenderTransform>
                 <Border Width="105" Height="18" CornerRadius="9" Background="#D92D32" BorderBrush="White" BorderThickness="2" />
@@ -48,13 +58,16 @@
                 <Ellipse Canvas.Left="57" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
                 <Ellipse Canvas.Left="82" Canvas.Top="3" Width="12" Height="12" Fill="White" Stroke="Black" StrokeThickness="1.5" />
             </Canvas>
-            <Canvas x:Name="recycleLine" Canvas.Left="{Binding LinesView[4].X}" Canvas.Top="{Binding LinesView[4].Y}" Width="105" Height="18">
-                <Rectangle Width="105" Height="18" Fill="White" Stroke="Black" StrokeThickness="1" />
-                <Rectangle Canvas.Left="2" Canvas.Top="2" Width="25" Height="14" Fill="#E8C600" />
-                <Rectangle Canvas.Left="27" Canvas.Top="2" Width="25" Height="14" Fill="#D92D32" />
-                <Rectangle Canvas.Left="52" Canvas.Top="2" Width="25" Height="14" Fill="#2A9D48" />
-                <Rectangle Canvas.Left="77" Canvas.Top="2" Width="26" Height="14" Fill="#315FD5" />
+            <Canvas x:Name="recycleLine" Canvas.Left="{Binding LinesView[4].X}" Canvas.Top="{Binding LinesView[4].Y}" Width="132" Height="28">
+                <Rectangle Width="132" Height="28" Fill="White" Stroke="Black" StrokeThickness="1" />
+                <Rectangle Canvas.Left="2" Canvas.Top="2" Width="32" Height="24" Fill="#E8C600" />
+                <Rectangle Canvas.Left="34" Canvas.Top="2" Width="32" Height="24" Fill="#D92D32" />
+                <Rectangle Canvas.Left="66" Canvas.Top="2" Width="32" Height="24" Fill="#2A9D48" />
+                <Rectangle Canvas.Left="98" Canvas.Top="2" Width="32" Height="24" Fill="#315FD5" />
             </Canvas>
+            <!-- Labor4: die beiden Ausgänge der Delivery-Line. -->
+            <Image Source="avares://SmartFactory/Assets/forRecycling.png" Canvas.Left="100" Canvas.Top="57" Width="100" Height="49" />
+            <Image Source="avares://SmartFactory/Assets/toCustomers.png" Canvas.Left="400" Canvas.Top="57" Width="100" Height="49" />
             <Canvas x:Name="deliveryLine" Canvas.Left="{Binding LinesView[5].X}" Canvas.Top="{Binding LinesView[5].Y}" Width="180" Height="44">
                 <Border Width="180" Height="44" Background="White" BorderBrush="#25313A" BorderThickness="1" />
                 <Border Canvas.Left="0" Canvas.Top="0" Width="60" Height="34" Background="#F3C1B6" BorderBrush="#25313A" BorderThickness="1">
@@ -159,11 +172,15 @@
             <Border Canvas.Left="625" Canvas.Top="211" Width="86" Height="32" Background="#2A9D48"><TextBlock Text="Green" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
             <TextBox Canvas.Left="720" Canvas.Top="211" Width="57" Height="32" Text="{Binding OrderGreen, Mode=TwoWay}" Foreground="#17212B" Background="#F8F8F1" TextAlignment="Right" />
             <TextBox Canvas.Left="800" Canvas.Top="211" Width="57" Height="32" Text="{Binding DeliveredGreen}" IsReadOnly="True" Foreground="#17212B" Background="#F8F8F1" TextAlignment="Right" />
+            <TextBlock Canvas.Left="625" Canvas.Top="247" Text="Zeit:" Foreground="#17212B" FontSize="16" />
+            <TextBlock Canvas.Left="670" Canvas.Top="247" Text="{Binding Laufzeit}" Foreground="#17212B" FontSize="16" />
             <Button x:Name="StartButton" Content="Start" Canvas.Left="625" Canvas.Top="274" Width="110" Height="38" Background="#287A42" Foreground="White" Click="Start_Click" />
             <Button x:Name="StopButton" Content="Stop" Canvas.Left="745" Canvas.Top="274" Width="110" Height="38" Background="#A32F2F" Foreground="White" Click="Stop_Click" />
             <RadioButton Canvas.Left="625" Canvas.Top="390" Content="Move" Foreground="#17212B" GroupName="MovementMode" IsChecked="True" Click="MoveMode_Checked" />
             <RadioButton Canvas.Left="625" Canvas.Top="421" Content="Step" Foreground="#17212B" GroupName="MovementMode" Click="StepMode_Checked" />
             <Button x:Name="UndockButton" Content="Undock" Foreground="White" Background="#62409A" FontWeight="Bold" Canvas.Left="625" Canvas.Top="472" Width="85" Height="36" Click="Undock_Click" />
+            <!-- Labor4: Rückmeldung des Undock-Knopfs. -->
+            <TextBlock Canvas.Left="625" Canvas.Top="329" Width="235" Text="{Binding UndockInfo}" TextWrapping="Wrap" Foreground="#17212B" FontSize="14" FontWeight="SemiBold" />
             <Grid Canvas.Left="720" Canvas.Top="377" Width="144" Height="152" RowDefinitions="38,38,38,38" ColumnDefinitions="48,48,48">
                 <Button x:Name="LeftANDupButton" Grid.Row="0" Grid.Column="0" Content="↖" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="MoveLeftANDup_Click" />
                 <Button x:Name="UpButton" Grid.Row="0" Grid.Column="1" Content="↑" Margin="2" FontSize="18" Background="#45525A" Foreground="White" Click="MoveUp_Click" />

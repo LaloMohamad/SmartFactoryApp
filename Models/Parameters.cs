@@ -30,6 +30,26 @@ public class Parameters
         small = 0,
         large = 1,
     }
+
+    // Labor4: Station oder Weg, auf dem sich ein Stein gerade befindet.
+    public enum BrickStatus
+    {
+        OnProductionLine,
+        Docked,
+        OnDeliveryLine,
+        ToCustomer,
+        ToRecycle,
+        OnRecycleLine
+    }
+
+    // Labor4: Rückmeldung für den Undock-Knopf.
+    public enum UndockResult
+    {
+        Success,
+        NoBrick,
+        WrongPlace
+    }
+
     public const int bricksPerLine = 4;
     public const double rotationStep = 5;
     public const int step = 3;

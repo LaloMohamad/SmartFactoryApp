@@ -19,5 +19,9 @@ namespace SmartFactory.Models
         public static Pose RobotPose = new Pose(285, 135, 0);
         public static Pose BrickPose = new Pose(250, 250, 45);
         public static Rectangle Borders = new Rectangle(48, 48, 505, 505);
+        // Labor4: Delivery-Line des bestehenden Mainprojekts.
+        public static readonly Point DeliveryLinePosition = new Point(210, 57);
+        public const int DeliveryLineWidth = 180;
+        public const int DeliveryLineHeight = 44;
     }
 }
