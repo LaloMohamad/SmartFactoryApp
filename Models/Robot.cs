@@ -48,10 +48,17 @@ public class Robot : Beweger
     public bool TryDock(LegoBrick brick)
     {
         // Labor4: Ein Stein auf der Delivery-Line oder auf dem Weg dorthin darf nicht aufgenommen werden.
-        if (DockedBrick != null || DistanceTo(brick) > 10)
+        if (DockedBrick != null)
             return false;
+
+        if ((brick.Status == Parameters.BrickStatus.OnRecycleLine && DistanceTo(brick) > 20))
+            return false;
+
+        if ((brick.Status != Parameters.BrickStatus.OnRecycleLine && DistanceTo(brick) > 10))
+            return false;
+
         if (brick.Status != Parameters.BrickStatus.OnProductionLine &&
-            brick.Status != Parameters.BrickStatus.OnRecycleLine)
+        brick.Status != Parameters.BrickStatus.OnRecycleLine)
             return false;
 
         DockedBrick = brick;
